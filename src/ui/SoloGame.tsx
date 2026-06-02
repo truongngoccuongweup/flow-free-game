@@ -11,17 +11,27 @@ import { fasterThanPercent, referenceMedianMs } from '../game/rank';
 import { loadStats, saveStats, recordDailyWin } from '../game/daily-stats';
 import { dailyDateISO } from '../game/level-repository';
 import { secondsToNextMidnight, formatCountdown } from '../game/countdown';
+import { shareUrl } from '../game/share-url';
 
-export function DailyGame({ puzzle, dayNumber, onPlayEndless }: { puzzle: Puzzle; dayNumber: number; onPlayEndless: () => void }) {
+interface SoloGameProps {
+  puzzle: Puzzle;
+  dayNumber: number;       // >0 shows "#N"; 0 = a shared challenge
+  recordStats: boolean;    // persist daily streak/best-time (Daily only)
+  onPlayMore: () => void;
+  playLabel: string;
+}
+
+/** A single-puzzle game with timer, share, and (optionally) daily-streak recording. */
+export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel }: SoloGameProps) {
   const b = useFlowBoard(puzzle);
   const [started, setStarted] = useState(false);
   const sw = useStopwatch(started && !b.won);
-  const [result, setResult] = useState<{ timeText: string; fasterThan: number; streak: number } | null>(null);
+  const [result, setResult] = useState<{ timeText: string; fasterThan: number; streak?: number } | null>(null);
   const [countdown, setCountdown] = useState('');
 
   const handlePointerDown = useCallback(
     (e: PointerEvent<SVGSVGElement>) => {
-      setStarted(true); // start the clock on the first move, not on load
+      setStarted(true); // start the clock on the first move
       b.onPointerDown(e);
     },
     [b],
@@ -30,23 +40,25 @@ export function DailyGame({ puzzle, dayNumber, onPlayEndless }: { puzzle: Puzzle
   useEffect(() => {
     if (!b.won || result) return;
     const ms = sw.elapsed();
-    const date = dailyDateISO(new Date());
-    const stats = recordDailyWin(loadStats(window.localStorage), date, ms);
-    saveStats(stats, window.localStorage);
-    setResult({
-      timeText: formatTime(ms),
-      fasterThan: fasterThanPercent(ms, referenceMedianMs(puzzle.difficulty)),
-      streak: stats.streak,
-    });
-  }, [b.won, result, sw, puzzle]);
+    const fasterThan = fasterThanPercent(ms, referenceMedianMs(puzzle.difficulty));
+    let streak: number | undefined;
+    if (recordStats) {
+      const stats = recordDailyWin(loadStats(window.localStorage), dailyDateISO(new Date()), ms);
+      saveStats(stats, window.localStorage);
+      streak = stats.streak;
+    }
+    setResult({ timeText: formatTime(ms), fasterThan, streak });
+  }, [b.won, result, sw, puzzle, recordStats]);
 
   useEffect(() => {
-    if (!result) return;
+    if (!result || !recordStats) return;
     const tick = (): void => setCountdown(formatCountdown(secondsToNextMidnight(new Date())));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [result]);
+  }, [result, recordStats]);
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   return (
     <>
@@ -65,10 +77,12 @@ export function DailyGame({ puzzle, dayNumber, onPlayEndless }: { puzzle: Puzzle
           dayNumber={dayNumber}
           timeText={result.timeText}
           fasterThan={result.fasterThan}
-          streak={result.streak}
           colorCount={puzzle.pairs.length}
-          countdownText={countdown}
-          onPlayEndless={onPlayEndless}
+          shareUrl={shareUrl(origin, puzzle.id)}
+          streak={result.streak}
+          countdownText={recordStats ? countdown : undefined}
+          onPlayEndless={onPlayMore}
+          playLabel={playLabel}
         />
       )}
     </>
