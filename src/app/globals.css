@@ -123,6 +123,12 @@ body {
   text-align: center; font-family: var(--font-mono), monospace; font-variant-numeric: tabular-nums;
   font-size: 30px; font-weight: 700; padding: 4px 0 0; color: var(--ink); text-shadow: var(--timer-glow);
 }
+.df-chip {
+  display: block; margin: 2px auto 0; border: 1px solid var(--line); background: var(--surface);
+  color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+  font-family: var(--font-heading), sans-serif; cursor: pointer;
+}
+.df-chip:active { transform: scale(0.96); }
 
 @keyframes df-pop { from { transform: scale(.86); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes df-fade { from { opacity: 0; } to { opacity: 1; } }

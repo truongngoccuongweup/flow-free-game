@@ -9,6 +9,9 @@ interface DailyResultProps {
   colorCount: number;
   shareUrl: string;
   streak?: number;
+  bestStreak?: number;
+  earnedBadge?: { emoji: string; label: string } | null;
+  freezeUsed?: boolean;
   countdownText?: string;
   onPlayEndless: () => void;
   playLabel?: string;
@@ -18,7 +21,7 @@ type ShareNavigator = Navigator & { share?: (data: { title?: string; text?: stri
 
 export function DailyResult({
   dayNumber, timeText, fasterThan, colorCount, shareUrl,
-  streak, countdownText, onPlayEndless, playLabel = 'Chơi Endless',
+  streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, playLabel = 'Chơi Endless',
 }: DailyResultProps) {
   const [shared, setShared] = useState(false);
 
@@ -44,9 +47,19 @@ export function DailyResult({
           {dayNumber > 0 ? `Daily Flow #${dayNumber}` : 'Thử thách'}
         </p>
         <p className="df-title" style={{ fontFamily: 'var(--font-mono)', fontSize: 46, margin: '4px 0' }}>{timeText}</p>
-        <p style={{ margin: '0 0 18px' }}>
+        <p style={{ margin: '0 0 6px' }}>
           Nhanh hơn {fasterThan}%{streak != null && streak > 0 ? ` · 🔥${streak}` : ''}
         </p>
+        {freezeUsed && (
+          <p style={{ margin: '0 0 6px', fontSize: 13, color: 'var(--brand)' }}>🧊 Freeze đã cứu chuỗi của bạn!</p>
+        )}
+        {earnedBadge && (
+          <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600 }}>{earnedBadge.emoji} Mở khóa huy hiệu: {earnedBadge.label}!</p>
+        )}
+        {bestStreak != null && bestStreak > 0 && streak != null && streak < bestStreak && (
+          <p style={{ margin: '0 0 6px', fontSize: 12, color: 'var(--muted)' }}>Kỷ lục: 🏅 {bestStreak}</p>
+        )}
+        <div style={{ height: 12 }} />
         <button className="df-btn df-cta" style={{ width: '100%' }} onClick={share}>
           {shared ? 'Đã chia sẻ! 🔗' : 'Khoe & rủ bạn chơi'}
         </button>

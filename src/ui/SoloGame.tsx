@@ -6,11 +6,13 @@ import { Board } from './Board';
 import { useFlowBoard } from './useFlowBoard';
 import { useStopwatch } from './useStopwatch';
 import { DailyResult } from './DailyResult';
+import { StreakCalendar } from './StreakCalendar';
 import { useBoardFeedback } from './useBoardFeedback';
 import { Confetti } from './Confetti';
 import { formatTime } from '../game/format';
 import { fasterThanPercent, referenceMedianMs } from '../game/rank';
-import { loadStats, saveStats, recordDailyWin } from '../game/daily-stats';
+import { loadStats, saveStats, recordDailyWin, hasPlayed, gapDays, type DailyStats } from '../game/daily-stats';
+import { justEarnedBadge, type Badge } from '../game/badges';
 import { dailyDateISO } from '../game/level-repository';
 import { secondsToNextMidnight, formatCountdown } from '../game/countdown';
 import { shareUrl } from '../game/share-url';
@@ -23,14 +25,29 @@ interface SoloGameProps {
   playLabel: string;
 }
 
+interface Result {
+  timeText: string;
+  fasterThan: number;
+  streak?: number;
+  bestStreak?: number;
+  earnedBadge?: Badge | null;
+  freezeUsed?: boolean;
+}
+
 /** A single-puzzle game with timer, share, and (optionally) daily-streak recording. */
 export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel }: SoloGameProps) {
   const b = useFlowBoard(puzzle);
   const [started, setStarted] = useState(false);
   const sw = useStopwatch(started && !b.won);
   const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
-  const [result, setResult] = useState<{ timeText: string; fasterThan: number; streak?: number } | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
   const [countdown, setCountdown] = useState('');
+  const [stats, setStats] = useState<DailyStats | null>(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  useEffect(() => {
+    if (recordStats) setStats(loadStats(window.localStorage));
+  }, [recordStats]);
 
   const handlePointerDown = useCallback(
     (e: PointerEvent<SVGSVGElement>) => {
@@ -44,13 +61,24 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
     if (!b.won || result) return;
     const ms = sw.elapsed();
     const fasterThan = fasterThanPercent(ms, referenceMedianMs(puzzle.difficulty));
-    let streak: number | undefined;
-    if (recordStats) {
-      const stats = recordDailyWin(loadStats(window.localStorage), dailyDateISO(new Date()), ms);
-      saveStats(stats, window.localStorage);
-      streak = stats.streak;
+    if (!recordStats) {
+      setResult({ timeText: formatTime(ms), fasterThan });
+      return;
     }
-    setResult({ timeText: formatTime(ms), fasterThan, streak });
+    const today = dailyDateISO(new Date());
+    const prev = loadStats(window.localStorage);
+    const freezeUsed = !hasPlayed(prev, today) && gapDays(prev.lastDate, today) === 2 && prev.freezeAvailable;
+    const next = recordDailyWin(prev, today, ms);
+    saveStats(next, window.localStorage);
+    setStats(next);
+    setResult({
+      timeText: formatTime(ms),
+      fasterThan,
+      streak: next.streak,
+      bestStreak: next.bestStreak,
+      earnedBadge: justEarnedBadge(prev.streak, next.streak),
+      freezeUsed,
+    });
   }, [b.won, result, sw, puzzle, recordStats]);
 
   useEffect(() => {
@@ -65,6 +93,15 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
 
   return (
     <>
+      {recordStats && stats && (
+        <button
+          className="df-chip"
+          onClick={() => setShowCalendar(true)}
+          aria-label="Xem lịch chuỗi"
+        >
+          🔥 {stats.streak}{stats.freezeAvailable ? ' 🧊' : ''} · 🏅 {stats.bestStreak} · 📅
+        </button>
+      )}
       <div className="df-timer">{formatTime(sw.ms)}</div>
       <div className="df-board-wrap">
         <div className="df-board">
@@ -76,6 +113,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         <button className="df-btn" onClick={b.reset}>Reset</button>
       </div>
       {confetti && <Confetti />}
+      {showCalendar && stats && <StreakCalendar stats={stats} onClose={() => setShowCalendar(false)} />}
       {result && (
         <DailyResult
           dayNumber={dayNumber}
@@ -84,6 +122,9 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
           colorCount={puzzle.pairs.length}
           shareUrl={shareUrl(origin, puzzle.id)}
           streak={result.streak}
+          bestStreak={result.bestStreak}
+          earnedBadge={result.earnedBadge}
+          freezeUsed={result.freezeUsed}
           countdownText={recordStats ? countdown : undefined}
           onPlayEndless={onPlayMore}
           playLabel={playLabel}
