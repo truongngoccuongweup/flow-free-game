@@ -98,6 +98,7 @@ body {
   cursor: pointer; transition: transform .12s ease, box-shadow .2s ease, background-color .2s ease;
 }
 .df-btn:active { transform: scale(0.97); }
+.df-btn:disabled { opacity: 0.4; cursor: default; }
 .df-cta { background: var(--brand); color: #fff; border: none; box-shadow: 0 6px 0 var(--brand-press); }
 .df-cta:active { box-shadow: 0 2px 0 var(--brand-press); transform: translateY(3px); }
 

@@ -1,8 +1,10 @@
 'use client';
 import { useCallback, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
-import type { Puzzle, Coord } from '../engine/types';
+import type { Puzzle, Coord, Solution } from '../engine/types';
 import { createPlayState, beginAt, extendTo, endDrag, isWon, type PlayState } from '../game/play-state';
+import { solve } from '../engine/solver';
+import { applyHint } from '../game/hint';
 import { pointToCell, stepsToward } from './geometry';
 
 const U = 100;
@@ -10,6 +12,7 @@ const U = 100;
 export function useFlowBoard(puzzle: Puzzle, initial?: PlayState) {
   const [state, setState] = useState<PlayState>(() => initial ?? createPlayState(puzzle));
   const history = useRef<PlayState[]>([]);
+  const solutionRef = useRef<Solution | null | undefined>(undefined);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const cellFromEvent = useCallback(
@@ -58,6 +61,18 @@ export function useFlowBoard(puzzle: Puzzle, initial?: PlayState) {
     setState(createPlayState(puzzle));
   }, [puzzle]);
   const undo = useCallback(() => setState((s) => history.current.pop() ?? s), []);
+  const hint = useCallback(() => {
+    setState((s) => {
+      if (isWon(puzzle, s)) return s;
+      if (solutionRef.current === undefined) solutionRef.current = solve(puzzle);
+      const sol = solutionRef.current;
+      if (!sol) return s;
+      const next = applyHint(puzzle, s, sol);
+      if (!next) return s;
+      history.current.push(s); // allow undo of the hint
+      return next;
+    });
+  }, [puzzle]);
 
-  return { state, svgRef, onPointerDown, onPointerMove, onPointerUp, reset, undo, won: isWon(puzzle, state) };
+  return { state, svgRef, onPointerDown, onPointerMove, onPointerUp, reset, undo, hint, won: isWon(puzzle, state) };
 }

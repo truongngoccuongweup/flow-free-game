@@ -5,11 +5,13 @@ import type { PlayState } from '../game/play-state';
 import { Board } from './Board';
 import { useFlowBoard } from './useFlowBoard';
 import { useBoardFeedback } from './useBoardFeedback';
+import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
 
 function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialState?: PlayState; onNext: () => void }) {
   const b = useFlowBoard(puzzle, initialState);
   const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
+  const hintQuota = useHintQuota();
   return (
     <>
       <div className="df-board-wrap">
@@ -26,6 +28,13 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
       </div>
       <div className="df-controls">
         <button className="df-btn" onClick={b.undo}>Undo</button>
+        <button
+          className="df-btn"
+          disabled={b.won || hintQuota.remaining <= 0}
+          onClick={() => { if (!b.won && hintQuota.use()) b.hint(); }}
+        >
+          💡 {hintQuota.remaining}
+        </button>
         <button className="df-btn" onClick={b.reset}>Reset</button>
       </div>
       {confetti && <Confetti />}
