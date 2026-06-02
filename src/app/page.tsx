@@ -9,8 +9,26 @@ import { EndlessGame } from '../ui/EndlessGame';
 import { SoloGame } from '../ui/SoloGame';
 import { Onboarding } from '../ui/Onboarding';
 import { useTheme } from '../ui/useTheme';
+import { useFeedbackPrefs } from '../ui/useFeedbackPrefs';
 
 const ONBOARD_KEY = 'daily-flow-onboarded';
+
+function FeedbackToggle() {
+  const { enabled, toggle } = useFeedbackPrefs();
+  return (
+    <button className="df-icon-btn" onClick={toggle} aria-label={enabled ? 'Tắt âm thanh' : 'Bật âm thanh'}>
+      {enabled ? (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 5 6 9H2v6h4l5 4z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" />
+        </svg>
+      ) : (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 5 6 9H2v6h4l5 4z" /><path d="M22 9l-6 6M16 9l6 6" />
+        </svg>
+      )}
+    </button>
+  );
+}
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
@@ -73,7 +91,10 @@ export default function Home() {
           <div className="df-logo">Daily Flow</div>
           <p className="df-sub">Nối hai chấm cùng màu · lấp đầy bảng</p>
         </div>
-        <ThemeToggle />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <FeedbackToggle />
+          <ThemeToggle />
+        </div>
       </header>
 
       {failed && <p style={{ color: 'var(--muted)' }}>Không tải được màn chơi.</p>}
