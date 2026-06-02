@@ -10,6 +10,7 @@ import { StreakCalendar } from './StreakCalendar';
 import { useBoardFeedback } from './useBoardFeedback';
 import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
+import { track } from './analytics';
 import { formatTime } from '../game/format';
 import { fasterThanPercent, referenceMedianMs } from '../game/rank';
 import { loadStats, saveStats, recordDailyWin, hasPlayed, gapDays, type DailyStats } from '../game/daily-stats';
@@ -64,6 +65,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
     const ms = sw.elapsed();
     const fasterThan = fasterThanPercent(ms, referenceMedianMs(puzzle.difficulty));
     if (!recordStats) {
+      track('challenge_win', { day: dayNumber, fasterThan });
       setResult({ timeText: formatTime(ms), fasterThan });
       return;
     }
@@ -73,6 +75,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
     const next = recordDailyWin(prev, today, ms);
     saveStats(next, window.localStorage);
     setStats(next);
+    track('daily_win', { day: dayNumber, fasterThan, streak: next.streak });
     setResult({
       timeText: formatTime(ms),
       fasterThan,
@@ -115,7 +118,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         <button
           className="df-btn"
           disabled={b.won || hintQuota.remaining <= 0}
-          onClick={() => { if (!b.won && hintQuota.use()) b.hint(); }}
+          onClick={() => { if (!b.won && hintQuota.use()) { track('hint_used', { mode: recordStats ? 'daily' : 'challenge' }); b.hint(); } }}
         >
           💡 {hintQuota.remaining}
         </button>

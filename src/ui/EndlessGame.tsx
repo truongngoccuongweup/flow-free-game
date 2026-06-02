@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Puzzle } from '../engine/types';
 import type { PlayState } from '../game/play-state';
 import { Board } from './Board';
@@ -7,11 +7,13 @@ import { useFlowBoard } from './useFlowBoard';
 import { useBoardFeedback } from './useBoardFeedback';
 import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
+import { track } from './analytics';
 
 function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialState?: PlayState; onNext: () => void }) {
   const b = useFlowBoard(puzzle, initialState);
   const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
   const hintQuota = useHintQuota();
+  useEffect(() => { if (b.won) track('endless_win', { puzzle: puzzle.id }); }, [b.won, puzzle.id]);
   return (
     <>
       <div className="df-board-wrap">
@@ -31,7 +33,7 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
         <button
           className="df-btn"
           disabled={b.won || hintQuota.remaining <= 0}
-          onClick={() => { if (!b.won && hintQuota.use()) b.hint(); }}
+          onClick={() => { if (!b.won && hintQuota.use()) { track('hint_used', { mode: 'endless' }); b.hint(); } }}
         >
           💡 {hintQuota.remaining}
         </button>
