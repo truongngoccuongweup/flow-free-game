@@ -8,7 +8,7 @@ import type { Size } from '../../src/engine/types';
 describe('mulberry32', () => {
   it('is deterministic for a seed', () => {
     const a = mulberry32(42); const b = mulberry32(42);
-    expect(a()).toBeCloseTo(b());
+    expect(a()).toBe(b());
   });
 });
 

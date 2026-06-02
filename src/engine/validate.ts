@@ -2,7 +2,7 @@ import type { Puzzle, Line, Coord, Pair } from './types';
 import { key, eq, adjacent, allCells } from './grid';
 
 export function isContiguous(cells: Coord[]): boolean {
-  if (cells.length < 1) return false;
+  if (cells.length < 2) return false;
   const seen = new Set<string>();
   for (let i = 0; i < cells.length; i++) {
     const k = key(cells[i]);

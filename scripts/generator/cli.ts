@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { mulberry32 } from './rng';
 import { generateSolution } from './generate-solution';
@@ -26,7 +26,7 @@ function run(): void {
     if (countSolutions(draft, 2) !== 1) continue;   // keep only uniquely-solvable
     const difficulty = scoreDifficulty(sol, size);
     const id = `s${size[0]}-${puzzles.length.toString().padStart(5, '0')}`;
-    const sig = JSON.stringify(draft.pairs);
+    const sig = JSON.stringify({ size, pairs: draft.pairs });
     if (seen.has(sig)) continue;
     seen.add(sig);
     puzzles.push({ ...draft, id, difficulty });
@@ -35,6 +35,7 @@ function run(): void {
   const byBucket = bucketByDifficulty(puzzles);
   const schedule = buildDailySchedule(byBucket, '2026-06-01', 400);
 
+  rmSync(OUT, { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
   for (const [bucket, list] of Object.entries(byBucket)) {
     writeFileSync(resolve(OUT, `bucket-${bucket}.json`), JSON.stringify(list));

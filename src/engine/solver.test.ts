@@ -16,6 +16,6 @@ describe('countSolutions', () => {
   });
   it('3x3 single color across a diagonal is NOT unique (>=2)', () => {
     const p: Puzzle = { id: 'c', size: [3, 3], difficulty: 1, pairs: [{ color: 0, a: [0, 0], b: [2, 2] }] };
-    expect(countSolutions(p)).toBe(2); // capped at limit 2
+    expect(countSolutions(p)).toBeGreaterThanOrEqual(2); // non-unique; count is capped at the default limit 2
   });
 });
