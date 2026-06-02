@@ -14,6 +14,6 @@ export function scoreDifficulty(solution: Solution, size: Size): number {
     }
   }
   const turnRatio = turns / Math.max(1, length);
-  const raw = area * 0.15 + colors * 0.6 + turnRatio * 10;
+  const raw = area * 0.12 + colors * 0.25 + turnRatio * 2;
   return Math.max(1, Math.min(10, Math.round(raw)));
 }
