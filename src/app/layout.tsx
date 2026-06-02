@@ -11,9 +11,14 @@ export const metadata: Metadata = {
   description: 'Nối đường, lấp đầy bảng — puzzle mỗi ngày.',
 };
 
+const themeScript = `(function(){try{var k='daily-flow-theme';var s=localStorage.getItem(k);var d=(s==='light'||s==='dark')?s:((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.dataset.theme=d;}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={`${heading.variable} ${body.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
