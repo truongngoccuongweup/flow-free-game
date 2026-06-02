@@ -57,3 +57,24 @@ export function beginAt(state: PlayState, puzzle: Puzzle, cell: Coord): PlayStat
   next.active = null;
   return next;
 }
+
+export function extendTo(state: PlayState, puzzle: Puzzle, cell: Coord): PlayState {
+  if (state.active === null) return state;
+  const C = state.active;
+  const path = state.paths[C];
+  if (path.length === 0) return state;
+  const head = path[path.length - 1];
+  if (eq(cell, head)) return state;
+  if (!adjacent(cell, head)) return state;
+  if (path.length >= 2 && eq(cell, path[path.length - 2])) {
+    const next = clone(state);
+    next.paths[C] = path.slice(0, -1); // backtrack
+    return next;
+  }
+  if (path.some((x) => eq(x, cell))) return state; // no self-cross
+  const epColor = endpointColorAt(puzzle, cell);
+  if (epColor !== null && epColor !== C) return state; // not another color's endpoint
+  const next = clone(state);
+  next.paths[C] = [...path, cell];
+  return next;
+}

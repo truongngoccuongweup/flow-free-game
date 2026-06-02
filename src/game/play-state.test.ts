@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createPlayState, linesFromState, isWon, beginAt } from './play-state';
+import { createPlayState, linesFromState, isWon, beginAt, extendTo } from './play-state';
 import type { Puzzle } from '../engine/types';
 
 const puzzle2x2: Puzzle = {
@@ -57,5 +57,37 @@ describe('beginAt', () => {
     beginAt(before, puzzle2x2, [0, 0]);
     expect(before.paths[0]).toEqual([]);
     expect(before.active).toBeNull();
+  });
+});
+
+describe('extendTo (extend / backtrack / block)', () => {
+  const start = () => beginAt(createPlayState(puzzle2x2), puzzle2x2, [0, 0]);
+  it('extends to an adjacent free cell', () => {
+    const s = extendTo(start(), puzzle2x2, [1, 0]); // [1,0] is color 0's other endpoint -> allowed
+    expect(s.paths[0]).toEqual([[0, 0], [1, 0]]);
+  });
+  it('ignores a non-adjacent cell', () => {
+    const s = extendTo(start(), puzzle2x2, [1, 1]); // diagonal from [0,0]
+    expect(s.paths[0]).toEqual([[0, 0]]);
+  });
+  it('backtracks when moving onto the previous cell', () => {
+    const p3: Puzzle = { id: 'p3', size: [3, 3], difficulty: 1, pairs: [{ color: 0, a: [0, 0], b: [2, 2] }] };
+    let t = beginAt(createPlayState(p3), p3, [0, 0]);
+    t = extendTo(t, p3, [1, 0]); // [[0,0],[1,0]]
+    t = extendTo(t, p3, [0, 0]); // back onto previous -> drop head
+    expect(t.paths[0]).toEqual([[0, 0]]);
+  });
+  it("blocks stepping onto another color's endpoint", () => {
+    const s = extendTo(start(), puzzle2x2, [0, 1]); // [0,1] is color 1's endpoint
+    expect(s.paths[0]).toEqual([[0, 0]]);
+  });
+  it('blocks self-crossing', () => {
+    const p3: Puzzle = { id: 'p3', size: [3, 3], difficulty: 1, pairs: [{ color: 0, a: [0, 0], b: [2, 2] }] };
+    let t = beginAt(createPlayState(p3), p3, [0, 0]);
+    t = extendTo(t, p3, [1, 0]);
+    t = extendTo(t, p3, [1, 1]);
+    t = extendTo(t, p3, [0, 1]);
+    t = extendTo(t, p3, [0, 0]); // [0,0] already on path -> block
+    expect(t.paths[0]).toEqual([[0, 0], [1, 0], [1, 1], [0, 1]]);
   });
 });
