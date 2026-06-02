@@ -75,6 +75,18 @@ export function extendTo(state: PlayState, puzzle: Puzzle, cell: Coord): PlaySta
   const epColor = endpointColorAt(puzzle, cell);
   if (epColor !== null && epColor !== C) return state; // not another color's endpoint
   const next = clone(state);
+  const owner = ownerColorAt(state, cell);
+  if (owner !== null && owner !== C) {
+    const ocells = next.paths[owner];
+    const idx = ocells.findIndex((x) => eq(x, cell));
+    next.paths[owner] = ocells.slice(0, idx); // cut the overwritten color at the shared cell
+  }
   next.paths[C] = [...path, cell];
+  return next;
+}
+
+export function endDrag(state: PlayState): PlayState {
+  const next = clone(state);
+  next.active = null;
   return next;
 }

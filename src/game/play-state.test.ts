@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createPlayState, linesFromState, isWon, beginAt, extendTo } from './play-state';
+import { createPlayState, linesFromState, isWon, beginAt, extendTo, endDrag } from './play-state';
 import type { Puzzle } from '../engine/types';
 
 const puzzle2x2: Puzzle = {
@@ -89,5 +89,28 @@ describe('extendTo (extend / backtrack / block)', () => {
     t = extendTo(t, p3, [0, 1]);
     t = extendTo(t, p3, [0, 0]); // [0,0] already on path -> block
     expect(t.paths[0]).toEqual([[0, 0], [1, 0], [1, 1], [0, 1]]);
+  });
+});
+
+describe('extendTo overwrite + endDrag', () => {
+  const p3two: Puzzle = {
+    id: 'p3two', size: [3, 3], difficulty: 1,
+    pairs: [
+      { color: 0, a: [0, 0], b: [2, 0] },
+      { color: 1, a: [0, 2], b: [2, 2] },
+    ],
+  };
+  it("cuts another color's path at the overwritten cell", () => {
+    let s = createPlayState(p3two);
+    s.paths[0] = [[0, 0], [1, 0], [1, 1]]; // color 0 drawn down into the middle
+    s = { ...s, active: 1, paths: { ...s.paths, 1: [[0, 2], [1, 2]] } };
+    s = extendTo(s, p3two, [1, 1]); // color 1 steps into color 0's [1,1]
+    expect(s.paths[1]).toEqual([[0, 2], [1, 2], [1, 1]]);
+    expect(s.paths[0]).toEqual([[0, 0], [1, 0]]); // cut at [1,1]
+  });
+  it('endDrag clears the active color', () => {
+    const s = endDrag({ active: 1, paths: { 0: [], 1: [[0, 2]] } });
+    expect(s.active).toBeNull();
+    expect(s.paths[1]).toEqual([[0, 2]]); // paths untouched
   });
 });
