@@ -16,9 +16,9 @@ export function GET(req: Request): ImageResponse {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ fontSize: 40, color: '#8893AB' }}>Daily Flow #{n}</div>
+        <div style={{ fontSize: 40, color: '#8893AB' }}>{`Daily Flow #${n}`}</div>
         <div style={{ fontSize: 160, fontWeight: 800, color: '#4C6EF5' }}>{t}</div>
-        <div style={{ fontSize: 44 }}>Nhanh hơn {r}% người chơi</div>
+        <div style={{ fontSize: 44 }}>{`Nhanh hơn ${r}% người chơi`}</div>
         <div style={{ fontSize: 28, color: '#8893AB', marginTop: 24 }}>dailyflow · nối đường, lấp đầy bảng</div>
       </div>
     ),
