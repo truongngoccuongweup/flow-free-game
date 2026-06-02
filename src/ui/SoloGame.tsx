@@ -111,7 +111,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         </div>
       </div>
       <div className="df-controls">
-        <button className="df-btn" onClick={b.undo}>Undo</button>
+        <button className="df-btn" onClick={b.undo}>Hoàn tác</button>
         <button
           className="df-btn"
           disabled={b.won || hintQuota.remaining <= 0}
@@ -119,7 +119,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         >
           💡 {hintQuota.remaining}
         </button>
-        <button className="df-btn" onClick={b.reset}>Reset</button>
+        <button className="df-btn" onClick={b.reset}>Làm lại</button>
       </div>
       {confetti && <Confetti />}
       {showCalendar && stats && <StreakCalendar stats={stats} onClose={() => setShowCalendar(false)} />}

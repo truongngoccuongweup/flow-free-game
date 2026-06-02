@@ -27,7 +27,7 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
         </div>
       </div>
       <div className="df-controls">
-        <button className="df-btn" onClick={b.undo}>Undo</button>
+        <button className="df-btn" onClick={b.undo}>Hoàn tác</button>
         <button
           className="df-btn"
           disabled={b.won || hintQuota.remaining <= 0}
@@ -35,14 +35,14 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
         >
           💡 {hintQuota.remaining}
         </button>
-        <button className="df-btn" onClick={b.reset}>Reset</button>
+        <button className="df-btn" onClick={b.reset}>Làm lại</button>
       </div>
       {confetti && <Confetti />}
       {b.won && (
         <div className="df-win" role="dialog" aria-label="Hoàn thành">
-          <div className="df-win-card">
-            <p className="df-title" style={{ fontSize: 24, margin: '0 0 12px' }}>Hoàn thành! 🎉</p>
-            <button className="df-btn df-cta" onClick={onNext}>Màn tiếp</button>
+          <div className="df-win-card" style={{ minWidth: 240 }}>
+            <p className="df-title" style={{ fontSize: 24, margin: '0 0 16px' }}>Hoàn thành! 🎉</p>
+            <button className="df-btn df-cta" style={{ width: '100%' }} onClick={onNext}>Màn tiếp →</button>
           </div>
         </div>
       )}
