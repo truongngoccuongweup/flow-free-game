@@ -15,7 +15,7 @@ const themeScript = `(function(){try{var k='daily-flow-theme';var s=localStorage
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
