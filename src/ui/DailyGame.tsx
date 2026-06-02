@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { PointerEvent } from 'react';
 import type { Puzzle } from '../engine/types';
 import { Board } from './Board';
 import { useFlowBoard } from './useFlowBoard';
@@ -13,9 +14,18 @@ import { secondsToNextMidnight, formatCountdown } from '../game/countdown';
 
 export function DailyGame({ puzzle, dayNumber, onPlayEndless }: { puzzle: Puzzle; dayNumber: number; onPlayEndless: () => void }) {
   const b = useFlowBoard(puzzle);
-  const sw = useStopwatch(!b.won);
+  const [started, setStarted] = useState(false);
+  const sw = useStopwatch(started && !b.won);
   const [result, setResult] = useState<{ timeText: string; fasterThan: number; streak: number } | null>(null);
   const [countdown, setCountdown] = useState('');
+
+  const handlePointerDown = useCallback(
+    (e: PointerEvent<SVGSVGElement>) => {
+      setStarted(true); // start the clock on the first move, not on load
+      b.onPointerDown(e);
+    },
+    [b],
+  );
 
   useEffect(() => {
     if (!b.won || result) return;
@@ -43,7 +53,7 @@ export function DailyGame({ puzzle, dayNumber, onPlayEndless }: { puzzle: Puzzle
       <div className="df-timer">{formatTime(sw.ms)}</div>
       <div className="df-board-wrap">
         <div className="df-board">
-          <Board puzzle={puzzle} state={b.state} svgRef={b.svgRef} onPointerDown={b.onPointerDown} onPointerMove={b.onPointerMove} onPointerUp={b.onPointerUp} />
+          <Board puzzle={puzzle} state={b.state} svgRef={b.svgRef} onPointerDown={handlePointerDown} onPointerMove={b.onPointerMove} onPointerUp={b.onPointerUp} />
         </div>
       </div>
       <div className="df-controls">
