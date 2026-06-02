@@ -19,8 +19,8 @@ describe('EndlessGame', () => {
   it('renders the board and controls', () => {
     const { getByTestId, getByText } = render(<EndlessGame puzzles={[puzzle]} />);
     expect(getByTestId('board')).toBeTruthy();
-    expect(getByText('Undo')).toBeTruthy();
-    expect(getByText('Reset')).toBeTruthy();
+    expect(getByText('Hoàn tác')).toBeTruthy();
+    expect(getByText('Làm lại')).toBeTruthy();
   });
   it('shows a win overlay when seeded with a solved state', () => {
     const solved = createPlayState(puzzle);
@@ -34,7 +34,7 @@ describe('EndlessGame', () => {
     solved.paths[0] = [[0, 0], [1, 0]];
     solved.paths[1] = [[0, 1], [1, 1]];
     const { getByText } = render(<EndlessGame puzzles={[puzzle]} initialState={solved} />);
-    fireEvent.click(getByText('Màn tiếp'));
+    fireEvent.click(getByText(/Màn tiếp/));
     expect(getByText('Hết màn — quay lại sau nhé!')).toBeTruthy();
   });
 });

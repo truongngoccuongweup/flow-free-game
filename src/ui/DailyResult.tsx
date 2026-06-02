@@ -21,7 +21,7 @@ type ShareNavigator = Navigator & { share?: (data: { title?: string; text?: stri
 
 export function DailyResult({
   dayNumber, timeText, fasterThan, colorCount, shareUrl,
-  streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, playLabel = 'Chơi Endless',
+  streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, playLabel = 'Chơi Vô tận',
 }: DailyResultProps) {
   const [shared, setShared] = useState(false);
 

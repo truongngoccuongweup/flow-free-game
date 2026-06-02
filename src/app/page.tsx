@@ -109,21 +109,21 @@ export default function Home() {
             dayNumber={schedule ? dailyNumberById(schedule, challenge.id) ?? 0 : 0}
             recordStats={false}
             onPlayMore={() => { setLeftChallenge(true); setMode('daily'); }}
-            playLabel="Chơi Daily hôm nay"
+            playLabel="Chơi màn hôm nay"
           />
         </>
       ) : (
         puzzles && (
           <>
             <div className="df-seg" role="tablist">
-              <button className={mode === 'daily' ? 'on' : ''} onClick={() => setMode('daily')}>Daily</button>
-              <button className={mode === 'endless' ? 'on' : ''} onClick={() => setMode('endless')}>Endless</button>
+              <button className={mode === 'daily' ? 'on' : ''} onClick={() => setMode('daily')}>Hằng ngày</button>
+              <button className={mode === 'endless' ? 'on' : ''} onClick={() => setMode('endless')}>Vô tận</button>
             </div>
             {mode === 'endless' && <EndlessGame puzzles={puzzles} />}
             {mode === 'daily' &&
               (daily && dayNo
-                ? <SoloGame key={`d-${daily.id}`} puzzle={daily} dayNumber={dayNo} recordStats onPlayMore={() => setMode('endless')} playLabel="Chơi Endless" />
-                : <p style={{ color: 'var(--muted)' }}>Hôm nay chưa có màn Daily.</p>)}
+                ? <SoloGame key={`d-${daily.id}`} puzzle={daily} dayNumber={dayNo} recordStats onPlayMore={() => setMode('endless')} playLabel="Chơi Vô tận" />
+                : <p style={{ color: 'var(--muted)' }}>Hôm nay chưa có màn.</p>)}
           </>
         )
       )}
