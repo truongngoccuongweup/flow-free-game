@@ -43,3 +43,7 @@ body {
 }
 .df-win-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 28px 32px; text-align: center; box-shadow: 0 24px 48px -20px rgba(30,40,80,.4); }
 .df-cta { background: var(--brand); color: #fff; border: none; box-shadow: 0 6px 0 var(--brand-press); }
+.df-seg { display: flex; background: #EEF0F5; border-radius: 14px; padding: 4px; margin: 4px 0 8px; }
+.df-seg button { flex: 1; border: none; background: transparent; font-family: var(--font-heading), sans-serif; font-weight: 600; font-size: 14px; padding: 9px 0; border-radius: 10px; color: var(--muted); cursor: pointer; }
+.df-seg button.on { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.df-timer { text-align: center; font-family: var(--font-mono), monospace; font-variant-numeric: tabular-nums; font-size: 28px; font-weight: 700; padding: 4px 0 0; }
