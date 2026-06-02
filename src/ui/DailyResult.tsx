@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { buildShareText } from '../game/share';
+import { track } from './analytics';
 
 interface DailyResultProps {
   dayNumber: number;
@@ -34,6 +35,7 @@ export function DailyResult({
       } else {
         await navigator.clipboard.writeText(text);
       }
+      track('share', { day: dayNumber });
       setShared(true);
     } catch {
       /* user cancelled or APIs unavailable */

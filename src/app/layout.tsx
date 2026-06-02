@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Outfit, Work_Sans, Space_Grotesk } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
 
 const heading = Outfit({ subsets: ['latin'], variable: '--font-heading' });
@@ -30,7 +31,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${heading.variable} ${body.variable} ${mono.variable}`}>{children}</body>
+      <body className={`${heading.variable} ${body.variable} ${mono.variable}`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

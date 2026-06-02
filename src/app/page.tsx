@@ -10,6 +10,7 @@ import { SoloGame } from '../ui/SoloGame';
 import { Onboarding } from '../ui/Onboarding';
 import { useTheme } from '../ui/useTheme';
 import { useFeedbackPrefs } from '../ui/useFeedbackPrefs';
+import { track } from '../ui/analytics';
 
 const ONBOARD_KEY = 'daily-flow-onboarded';
 
@@ -58,7 +59,9 @@ export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    setSharedId(puzzleIdFromSearch(window.location.search));
+    const sid = puzzleIdFromSearch(window.location.search);
+    setSharedId(sid);
+    if (sid) track('challenge_opened', { puzzle: sid });
     try {
       if (!window.localStorage.getItem(ONBOARD_KEY)) setShowOnboarding(true);
     } catch {
@@ -74,6 +77,7 @@ export default function Home() {
 
   const dismissOnboarding = (): void => {
     try { window.localStorage.setItem(ONBOARD_KEY, '1'); } catch { /* ignore */ }
+    track('onboarding_done');
     setShowOnboarding(false);
   };
 
