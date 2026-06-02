@@ -8,8 +8,9 @@ import { bucketByDifficulty, buildDailySchedule } from './package';
 import { countSolutions } from '../../src/engine/solver';
 import type { Puzzle, Size } from '../../src/engine/types';
 
-const SIZES: Size[] = [[5, 5], [6, 6], [7, 7], [8, 8]];
-const TARGET = Number(process.env.COUNT ?? 500);   // total unique puzzles to emit
+// Include small grids so easy buckets (1–3) exist for onboarding / Monday daily.
+const SIZES: Size[] = [[3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8]];
+const TARGET = Number(process.env.COUNT ?? 800);   // total unique puzzles to emit
 const OUT = resolve(process.cwd(), 'public/levels');
 
 function run(): void {
