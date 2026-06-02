@@ -8,6 +8,7 @@ import { useStopwatch } from './useStopwatch';
 import { DailyResult } from './DailyResult';
 import { StreakCalendar } from './StreakCalendar';
 import { useBoardFeedback } from './useBoardFeedback';
+import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
 import { formatTime } from '../game/format';
 import { fasterThanPercent, referenceMedianMs } from '../game/rank';
@@ -40,6 +41,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
   const [started, setStarted] = useState(false);
   const sw = useStopwatch(started && !b.won);
   const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
+  const hintQuota = useHintQuota();
   const [result, setResult] = useState<Result | null>(null);
   const [countdown, setCountdown] = useState('');
   const [stats, setStats] = useState<DailyStats | null>(null);
@@ -110,6 +112,13 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
       </div>
       <div className="df-controls">
         <button className="df-btn" onClick={b.undo}>Undo</button>
+        <button
+          className="df-btn"
+          disabled={b.won || hintQuota.remaining <= 0}
+          onClick={() => { if (!b.won && hintQuota.use()) b.hint(); }}
+        >
+          💡 {hintQuota.remaining}
+        </button>
         <button className="df-btn" onClick={b.reset}>Reset</button>
       </div>
       {confetti && <Confetti />}
