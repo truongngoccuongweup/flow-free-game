@@ -10,5 +10,7 @@ const SQUARES = ['🟥', '🟦', '🟩', '🟨', '🟧', '🟫', '🟪', '⬛'] 
 
 export function buildShareText(r: ShareResult, url = 'dailyflow.app'): string {
   const squares = Array.from({ length: r.colorCount }, (_, i) => SQUARES[i % SQUARES.length]).join('');
-  return `Daily Flow #${r.dayNumber} ⚡ ${r.timeText}\n${squares}\nNhanh hơn ${r.fasterThan}% · 🔥${r.streak}\n${url}`;
+  const head = r.dayNumber > 0 ? `Daily Flow #${r.dayNumber}` : 'Daily Flow';
+  const stats = r.streak > 0 ? `Nhanh hơn ${r.fasterThan}% · 🔥${r.streak}` : `Nhanh hơn ${r.fasterThan}%`;
+  return `${head} ⚡ ${r.timeText}\n${squares}\n${stats}\n${url}`;
 }

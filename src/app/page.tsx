@@ -3,10 +3,14 @@ import { useEffect, useState } from 'react';
 import type { Puzzle } from '../engine/types';
 import { loadEndlessPuzzles } from '../game/level-loader';
 import { indexById, puzzleForDate, dailyDateISO, type DailyEntry } from '../game/level-repository';
-import { dailyNumber } from '../game/daily';
+import { dailyNumber, dailyNumberById } from '../game/daily';
+import { puzzleIdFromSearch } from '../game/share-url';
 import { EndlessGame } from '../ui/EndlessGame';
-import { DailyGame } from '../ui/DailyGame';
+import { SoloGame } from '../ui/SoloGame';
+import { Onboarding } from '../ui/Onboarding';
 import { useTheme } from '../ui/useTheme';
+
+const ONBOARD_KEY = 'daily-flow-onboarded';
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
@@ -31,8 +35,17 @@ export default function Home() {
   const [schedule, setSchedule] = useState<DailyEntry[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [mode, setMode] = useState<'daily' | 'endless'>('daily');
+  const [sharedId, setSharedId] = useState<string | null>(null);
+  const [leftChallenge, setLeftChallenge] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
+    setSharedId(puzzleIdFromSearch(window.location.search));
+    try {
+      if (!window.localStorage.getItem(ONBOARD_KEY)) setShowOnboarding(true);
+    } catch {
+      /* storage unavailable */
+    }
     Promise.all([
       loadEndlessPuzzles(),
       fetch('/levels/daily-schedule.json').then((r) => r.json() as Promise<DailyEntry[]>),
@@ -41,9 +54,17 @@ export default function Home() {
       .catch(() => setFailed(true));
   }, []);
 
+  const dismissOnboarding = (): void => {
+    try { window.localStorage.setItem(ONBOARD_KEY, '1'); } catch { /* ignore */ }
+    setShowOnboarding(false);
+  };
+
+  const byId = puzzles ? indexById(puzzles) : null;
   const today = dailyDateISO(new Date());
-  const daily = puzzles && schedule ? puzzleForDate(schedule, indexById(puzzles), today) : null;
+  const daily = byId && schedule ? puzzleForDate(schedule, byId, today) : null;
   const dayNo = schedule ? dailyNumber(schedule, today) : null;
+
+  const challenge = !leftChallenge && sharedId && byId ? byId.get(sharedId) ?? null : null;
 
   return (
     <main className="df-shell">
@@ -54,17 +75,39 @@ export default function Home() {
         </div>
         <ThemeToggle />
       </header>
-      <div className="df-seg" role="tablist">
-        <button className={mode === 'daily' ? 'on' : ''} onClick={() => setMode('daily')}>Daily</button>
-        <button className={mode === 'endless' ? 'on' : ''} onClick={() => setMode('endless')}>Endless</button>
-      </div>
+
       {failed && <p style={{ color: 'var(--muted)' }}>Không tải được màn chơi.</p>}
       {!failed && !puzzles && <p style={{ color: 'var(--muted)' }}>Đang tải…</p>}
-      {puzzles && mode === 'endless' && <EndlessGame puzzles={puzzles} />}
-      {puzzles && mode === 'daily' &&
-        (daily && dayNo
-          ? <DailyGame key={daily.id} puzzle={daily} dayNumber={dayNo} onPlayEndless={() => setMode('endless')} />
-          : <p style={{ color: 'var(--muted)' }}>Hôm nay chưa có màn Daily.</p>)}
+
+      {challenge ? (
+        <>
+          <p style={{ color: 'var(--muted)', fontSize: 13, margin: '4px 0 8px' }}>Bạn được mời chơi một màn 🔗</p>
+          <SoloGame
+            key={`c-${challenge.id}`}
+            puzzle={challenge}
+            dayNumber={schedule ? dailyNumberById(schedule, challenge.id) ?? 0 : 0}
+            recordStats={false}
+            onPlayMore={() => { setLeftChallenge(true); setMode('daily'); }}
+            playLabel="Chơi Daily hôm nay"
+          />
+        </>
+      ) : (
+        puzzles && (
+          <>
+            <div className="df-seg" role="tablist">
+              <button className={mode === 'daily' ? 'on' : ''} onClick={() => setMode('daily')}>Daily</button>
+              <button className={mode === 'endless' ? 'on' : ''} onClick={() => setMode('endless')}>Endless</button>
+            </div>
+            {mode === 'endless' && <EndlessGame puzzles={puzzles} />}
+            {mode === 'daily' &&
+              (daily && dayNo
+                ? <SoloGame key={`d-${daily.id}`} puzzle={daily} dayNumber={dayNo} recordStats onPlayMore={() => setMode('endless')} playLabel="Chơi Endless" />
+                : <p style={{ color: 'var(--muted)' }}>Hôm nay chưa có màn Daily.</p>)}
+          </>
+        )
+      )}
+
+      {showOnboarding && <Onboarding onDone={dismissOnboarding} />}
     </main>
   );
 }
