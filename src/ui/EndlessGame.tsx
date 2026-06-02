@@ -4,9 +4,12 @@ import type { Puzzle } from '../engine/types';
 import type { PlayState } from '../game/play-state';
 import { Board } from './Board';
 import { useFlowBoard } from './useFlowBoard';
+import { useBoardFeedback } from './useBoardFeedback';
+import { Confetti } from './Confetti';
 
 function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialState?: PlayState; onNext: () => void }) {
   const b = useFlowBoard(puzzle, initialState);
+  const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
   return (
     <>
       <div className="df-board-wrap">
@@ -25,6 +28,7 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
         <button className="df-btn" onClick={b.undo}>Undo</button>
         <button className="df-btn" onClick={b.reset}>Reset</button>
       </div>
+      {confetti && <Confetti />}
       {b.won && (
         <div className="df-win" role="dialog" aria-label="Hoàn thành">
           <div className="df-win-card">

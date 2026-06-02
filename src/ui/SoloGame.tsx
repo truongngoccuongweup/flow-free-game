@@ -6,6 +6,8 @@ import { Board } from './Board';
 import { useFlowBoard } from './useFlowBoard';
 import { useStopwatch } from './useStopwatch';
 import { DailyResult } from './DailyResult';
+import { useBoardFeedback } from './useBoardFeedback';
+import { Confetti } from './Confetti';
 import { formatTime } from '../game/format';
 import { fasterThanPercent, referenceMedianMs } from '../game/rank';
 import { loadStats, saveStats, recordDailyWin } from '../game/daily-stats';
@@ -26,6 +28,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
   const b = useFlowBoard(puzzle);
   const [started, setStarted] = useState(false);
   const sw = useStopwatch(started && !b.won);
+  const { confetti } = useBoardFeedback(puzzle, b.state, b.won);
   const [result, setResult] = useState<{ timeText: string; fasterThan: number; streak?: number } | null>(null);
   const [countdown, setCountdown] = useState('');
 
@@ -72,6 +75,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         <button className="df-btn" onClick={b.undo}>Undo</button>
         <button className="df-btn" onClick={b.reset}>Reset</button>
       </div>
+      {confetti && <Confetti />}
       {result && (
         <DailyResult
           dayNumber={dayNumber}

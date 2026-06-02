@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createPlayState, linesFromState, isWon, beginAt, extendTo, endDrag } from './play-state';
+import { createPlayState, linesFromState, isWon, beginAt, extendTo, endDrag, countCompletedColors } from './play-state';
 import type { Puzzle } from '../engine/types';
 
 const puzzle2x2: Puzzle = {
@@ -112,5 +112,21 @@ describe('extendTo overwrite + endDrag', () => {
     const s = endDrag({ active: 1, paths: { 0: [], 1: [[0, 2]] } });
     expect(s.active).toBeNull();
     expect(s.paths[1]).toEqual([[0, 2]]); // paths untouched
+  });
+});
+
+describe('countCompletedColors', () => {
+  it('counts only colors whose endpoints are correctly connected', () => {
+    const s = createPlayState(puzzle2x2);
+    expect(countCompletedColors(puzzle2x2, s)).toBe(0);
+    s.paths[0] = [[0, 0], [1, 0]]; // color 0 connected
+    expect(countCompletedColors(puzzle2x2, s)).toBe(1);
+    s.paths[1] = [[0, 1], [1, 1]]; // both connected
+    expect(countCompletedColors(puzzle2x2, s)).toBe(2);
+  });
+  it('does not count an incomplete or wrong-endpoint path', () => {
+    const s = createPlayState(puzzle2x2);
+    s.paths[0] = [[0, 0]]; // too short
+    expect(countCompletedColors(puzzle2x2, s)).toBe(0);
   });
 });
