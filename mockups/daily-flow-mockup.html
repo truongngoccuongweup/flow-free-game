@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Daily Flow — UI Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* Khung (calm) */
+    --bg-page:#E9ECF3;
+    --screen:#FAFAF8;
+    --screen-dark:#0E0F13;
+    --ink:#0F172A;
+    --muted:#64748B;
+    --line:#EBEDF2;
+    --card:#FFFFFF;
+    /* Brand */
+    --indigo:#4C6EF5;
+    --indigo-ink:#3B5BDB;
+    /* Mực (vibrant flow colors) */
+    --red:#E5484D;
+    --blue:#4C6EF5;
+    --green:#22C55E;
+    --yellow:#FACC15;
+    --orange:#F97316;
+    --cyan:#22D3EE;
+    --pink:#EC4899;
+    --purple:#A855F7;
+    --radius:24px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;background:var(--bg-page);color:var(--ink);
+    font-family:'Work Sans',system-ui,sans-serif;
+    padding:40px 20px 80px;
+  }
+  .page-head{max-width:1180px;margin:0 auto 36px}
+  .page-head h1{font-family:'Outfit';font-weight:800;font-size:34px;margin:0 0 6px;letter-spacing:-.02em}
+  .page-head p{color:var(--muted);margin:0;max-width:680px;line-height:1.6}
+  .tokens{display:flex;flex-wrap:wrap;gap:18px;margin-top:22px;align-items:center}
+  .swatch{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+  .chip{width:22px;height:22px;border-radius:7px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+  .tag{font-size:12px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--line);
+       padding:5px 11px;border-radius:999px}
+
+  .gallery{display:flex;flex-wrap:wrap;gap:42px 36px;justify-content:center;max-width:1700px;margin:0 auto}
+  .framewrap{width:360px}
+  .caption{font-family:'Outfit';font-weight:700;font-size:15px;margin:16px 2px 4px}
+  .subcap{color:var(--muted);font-size:12.5px;line-height:1.55;margin:0 2px}
+
+  /* phone */
+  .phone{
+    width:360px;height:740px;border-radius:46px;background:#11131a;
+    padding:13px;box-shadow:0 30px 60px -20px rgba(20,30,60,.45),0 6px 16px rgba(0,0,0,.12);
+    position:relative;
+  }
+  .screen{
+    width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--screen);
+    display:flex;flex-direction:column;position:relative;
+  }
+  .screen.dark{background:var(--screen-dark);color:#fff}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);
+    width:120px;height:28px;background:#11131a;border-radius:0 0 18px 18px;z-index:20}
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:46px 22px 10px}
+  .topbar .left{display:flex;flex-direction:column}
+  .puzzle-no{font-family:'Outfit';font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .puzzle-date{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .streak{display:flex;align-items:center;gap:5px;background:#FFF4E5;color:#B45309;
+    font-weight:700;font-size:14px;padding:6px 11px;border-radius:999px;border:1px solid #FCE8C8}
+  .timer{font-family:'Space Grotesk';font-variant-numeric:tabular-nums;font-weight:700;
+    font-size:30px;letter-spacing:.01em;text-align:center;margin:6px 0 2px}
+  .timer .lbl{display:block;font-family:'Work Sans';font-weight:600;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* board */
+  .board-area{flex:1;display:flex;align-items:center;justify-content:center;padding:6px 22px}
+  .board{background:var(--card);border-radius:28px;padding:14px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02),0 18px 30px -22px rgba(30,40,80,.35);
+    border:1px solid #F0F1F5}
+  .screen.dark .board{background:#171922;border-color:#222533;box-shadow:none}
+  .board svg{display:block}
+
+  /* bottom controls (thumb zone) */
+  .controls{display:flex;gap:12px;padding:14px 22px 26px;justify-content:center}
+  .btn{flex:1;height:56px;border:none;border-radius:18px;font-family:'Outfit';font-weight:600;
+    font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    transition:transform .15s ease,box-shadow .15s ease}
+  .btn:active{transform:scale(.96)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);
+    box-shadow:0 2px 0 #EDEFF4}
+  .btn-soft{background:#EEF1FE;color:var(--indigo-ink)}
+  .btn-primary{background:var(--indigo);color:#fff;box-shadow:0 6px 0 #2F49C9;flex:1.4}
+  .btn-primary:active{box-shadow:0 2px 0 #2F49C9;transform:translateY(3px)}
+  .svgi{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* win screen */
+  .win-hero{padding:54px 26px 0;text-align:center}
+  .win-badge{width:78px;height:78px;border-radius:26px;margin:0 auto 16px;background:linear-gradient(145deg,#22C55E,#16A34A);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 14px 24px -10px rgba(34,197,94,.6)}
+  .win-title{font-family:'Outfit';font-weight:800;font-size:28px;margin:0 0 4px}
+  .win-sub{color:var(--muted);font-size:13.5px;margin:0}
+  .stat-row{display:flex;gap:12px;padding:22px 26px 8px}
+  .stat{flex:1;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 10px;text-align:center}
+  .stat .v{font-family:'Space Grotesk';font-variant-numeric:tabular-nums;font-weight:700;font-size:24px}
+  .stat .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .rankbar{margin:10px 26px 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+  .rankbar .top{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:9px}
+  .track{height:9px;background:#EEF0F5;border-radius:999px;overflow:hidden}
+  .fill{height:100%;width:73%;background:linear-gradient(90deg,var(--indigo),#7AA2FF);border-radius:999px}
+
+  /* share artifact card */
+  .artifact{margin:8px 22px 0;background:linear-gradient(160deg,#1E2230,#0E0F13);border-radius:24px;
+    padding:20px 20px 18px;color:#fff;position:relative;overflow:hidden}
+  .artifact .head{display:flex;justify-content:space-between;align-items:center;font-family:'Outfit';font-weight:700;font-size:15px}
+  .artifact .big{font-family:'Space Grotesk';font-variant-numeric:tabular-nums;font-weight:700;font-size:46px;margin:6px 0 0}
+  .artifact .rank{font-size:13px;color:#A9B2C7;margin-top:2px}
+  .ribbon{display:flex;gap:6px;margin-top:16px}
+  .ribbon span{height:10px;flex:1;border-radius:999px}
+  .artifact .url{margin-top:14px;font-size:11.5px;color:#8893AB;letter-spacing:.02em}
+  .artifact .flow-emoji{font-size:15px;letter-spacing:3px;margin-top:12px}
+
+  .share-cta{padding:14px 22px 26px}
+  .share-cta .btn-primary{width:100%;height:58px;font-size:16px;box-shadow:0 6px 0 #2F49C9}
+  .next-in{text-align:center;color:var(--muted);font-size:12.5px;margin:0 0 2px;padding-top:2px}
+  .next-in b{color:var(--ink);font-family:'Space Grotesk';font-variant-numeric:tabular-nums}
+
+  /* onboarding */
+  .ob{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center}
+  .ob h2{font-family:'Outfit';font-weight:800;font-size:26px;margin:24px 0 8px}
+  .ob p{color:var(--muted);font-size:14px;line-height:1.55;margin:0 0 6px;max-width:240px}
+  .hint-pill{margin-top:18px;background:#EEF1FE;color:var(--indigo-ink);font-weight:600;font-size:13px;
+    padding:9px 16px;border-radius:999px}
+  .dots-ind{display:flex;gap:7px;justify-content:center;margin-top:26px}
+  .dots-ind i{width:7px;height:7px;border-radius:50%;background:#CBD5E1}
+  .dots-ind i.on{width:22px;border-radius:999px;background:var(--indigo)}
+
+  /* segmented mode toggle */
+  .seg{display:flex;background:#EEF0F5;border-radius:14px;padding:4px;margin:0 22px}
+  .seg button{flex:1;border:none;background:transparent;font-family:'Outfit';font-weight:600;font-size:13.5px;
+    padding:9px 0;border-radius:10px;color:var(--muted);cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .diff-ramp{display:flex;align-items:center;gap:8px;justify-content:center;padding:8px 0 0;font-size:11.5px;color:var(--muted)}
+  .diff-ramp .lvl{display:flex;gap:4px}
+  .diff-ramp .lvl i{width:18px;height:5px;border-radius:3px;background:#E2E6EE}
+  .diff-ramp .lvl i.on{background:var(--indigo)}
+</style>
+</head>
+<body>
+  <div class="page-head">
+    <h1>Daily Flow — UI Mockup</h1>
+    <p>Hướng <b>“Khung tĩnh, mực rực”</b>: khung giao diện calm/premium, năng lượng dồn vào đường nối &amp; khoảnh khắc thắng. Mọi nút thao tác nằm trong vùng ngón cái. Endpoint có <b>ký hiệu phụ</b> (▲ ● ■ ◆ ✚) để người mù màu vẫn chơi được. Mở thử trên điện thoại để cảm nhận tỉ lệ thật.</p>
+    <div class="tokens">
+      <span class="tag">Outfit · Work Sans · Space Grotesk (timer)</span>
+      <span class="swatch"><span class="chip" style="background:#4C6EF5"></span>Indigo /brand</span>
+      <span class="swatch"><span class="chip" style="background:#E5484D"></span><span class="chip" style="background:#22C55E"></span><span class="chip" style="background:#FACC15"></span><span class="chip" style="background:#F97316"></span><span class="chip" style="background:#A855F7"></span>Flow colors</span>
+      <span class="swatch"><span class="chip" style="background:#FAFAF8"></span>Canvas</span>
+    </div>
+  </div>
+
+  <div class="gallery">
+
+    <!-- 1. ONBOARDING -->
+    <div class="framewrap">
+      <div class="phone"><div class="notch"></div>
+        <div class="screen">
+          <div class="ob">
+            <div class="board" style="padding:12px">
+              <svg width="200" height="200" viewBox="0 0 180 180">
+                <!-- empty dots -->
+                <g fill="#D7DCE6">
+                  <circle cx="90" cy="30" r="4"/><circle cx="150" cy="30" r="4"/>
+                  <circle cx="30" cy="90" r="4"/><circle cx="90" cy="90" r="4"/><circle cx="150" cy="90" r="4"/>
+                  <circle cx="30" cy="150" r="4"/><circle cx="90" cy="150" r="4"/>
+                </g>
+                <!-- ghost hint path -->
+                <path d="M30 30 H150 V90 H30 V150 H150" fill="none" stroke="#4C6EF5" stroke-width="30"
+                      stroke-linecap="round" stroke-linejoin="round" opacity="0.16"/>
+                <path d="M30 30 H150 V90 H30 V150 H150" fill="none" stroke="#4C6EF5" stroke-width="3"
+                      stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 9" opacity="0.55"/>
+                <!-- endpoints -->
+                <circle cx="30" cy="30" r="22" fill="#4C6EF5"/>
+                <text x="30" y="37" text-anchor="middle" font-size="20" fill="#fff" font-family="Outfit">●</text>
+                <circle cx="150" cy="150" r="22" fill="#4C6EF5"/>
+                <text x="150" y="157" text-anchor="middle" font-size="20" fill="#fff" font-family="Outfit">●</text>
+              </svg>
+            </div>
+            <h2>Nối &amp; lấp đầy</h2>
+            <p>Miết ngón tay nối hai chấm cùng màu. Lấp kín bảng, đường không cắt nhau.</p>
+            <div class="hint-pill">Thử miết theo đường mờ →</div>
+            <div class="dots-ind"><i class="on"></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">1 · Onboarding — “0 giây”</div>
+      <p class="subcap">Dạy bằng <i>làm</i>, không bằng chữ. Đường mờ gợi ý + 3×3 dễ → ai cũng thắng ngay giây đầu (early dopamine).</p>
+    </div>
+
+    <!-- 2. DAILY FLOW PLAYING -->
+    <div class="framewrap">
+      <div class="phone"><div class="notch"></div>
+        <div class="screen">
+          <div class="topbar">
+            <div class="left">
+              <span class="puzzle-no">Daily Flow #142</span>
+              <span class="puzzle-date">Thứ Tư · 6 Mức 3/7</span>
+            </div>
+            <span class="streak">🔥 7</span>
+          </div>
+          <div class="timer">00:48<span class="lbl">Thời gian</span></div>
+          <div class="board-area">
+            <div class="board">
+              <svg width="290" height="290" viewBox="0 0 300 300">
+                <!-- empty dots for unfinished colors -->
+                <g fill="#D7DCE6">
+                  <circle cx="270" cy="150" r="4"/><circle cx="270" cy="210" r="4"/><circle cx="270" cy="270" r="4"/><circle cx="210" cy="270" r="4"/>
+                </g>
+                <!-- RED done -->
+                <path d="M30 30 H270 V90 H210" fill="none" stroke="#E5484D" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- BLUE done -->
+                <path d="M30 90 V150 H90 V90 H150" fill="none" stroke="#4C6EF5" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- ORANGE done -->
+                <path d="M90 210 H210" fill="none" stroke="#F97316" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- YELLOW done -->
+                <path d="M30 210 V270 H150" fill="none" stroke="#FACC15" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- GREEN in-progress (active drag) -->
+                <path d="M150 150 H230" fill="none" stroke="#22C55E" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                <circle cx="230" cy="150" r="9" fill="#fff" stroke="#22C55E" stroke-width="4"/>
+
+                <!-- endpoints with colorblind glyphs -->
+                <g font-family="Outfit" font-size="20" fill="#fff" text-anchor="middle">
+                  <circle cx="30" cy="30" r="23" fill="#E5484D"/><text x="30" y="37">▲</text>
+                  <circle cx="210" cy="90" r="23" fill="#E5484D"/><text x="210" y="37" fill="#E5484D">▲</text>
+                  <circle cx="30" cy="90" r="23" fill="#4C6EF5"/><text x="30" y="97">●</text>
+                  <circle cx="150" cy="90" r="23" fill="#4C6EF5"/><text x="150" y="97">●</text>
+                  <circle cx="150" cy="150" r="23" fill="#22C55E"/><text x="150" y="157">■</text>
+                  <circle cx="210" cy="270" r="23" fill="#22C55E"/><text x="210" y="277">■</text>
+                  <circle cx="30" cy="210" r="23" fill="#FACC15"/><text x="30" y="217" fill="#7c5e00">◆</text>
+                  <circle cx="150" cy="270" r="23" fill="#FACC15"/><text x="150" y="277" fill="#7c5e00">◆</text>
+                  <circle cx="90" cy="210" r="23" fill="#F97316"/><text x="90" y="217">✚</text>
+                  <circle cx="210" cy="210" r="23" fill="#F97316"/><text x="210" y="217">✚</text>
+                </g>
+                <!-- fix red second endpoint glyph color -->
+                <circle cx="210" cy="90" r="23" fill="#E5484D"/><text x="210" y="97" text-anchor="middle" font-family="Outfit" font-size="20" fill="#fff">▲</text>
+              </svg>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="btn btn-ghost"><svg class="svgi" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>Undo</button>
+            <button class="btn btn-soft"><svg class="svgi" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z"/><path d="M9 21h6"/></svg>Gợi ý</button>
+            <button class="btn btn-ghost"><svg class="svgi" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">2 · Daily Flow — đang chơi</div>
+      <p class="subcap">Timer (Space Grotesk, tabular) là ngôi sao. Board căn giữa-trên; Undo/Gợi ý/Reset trong thumb-zone. Đường nối rực trên canvas tĩnh.</p>
+    </div>
+
+    <!-- 3. WIN / RESULT -->
+    <div class="framewrap">
+      <div class="phone"><div class="notch"></div>
+        <div class="screen">
+          <div class="win-hero">
+            <div class="win-badge">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <h1 class="win-title">Hoàn hảo!</h1>
+            <p class="win-sub">Daily Flow #142 · 0 nước thừa</p>
+          </div>
+          <div class="stat-row">
+            <div class="stat"><div class="v">0:48</div><div class="k">Thời gian</div></div>
+            <div class="stat"><div class="v">5/5</div><div class="k">Đường nối</div></div>
+            <div class="stat"><div class="v">🔥8</div><div class="k">Streak</div></div>
+          </div>
+          <div class="rankbar">
+            <div class="top"><span>Nhanh hơn <b style="color:#3B5BDB">73%</b> hôm nay</span><span style="color:var(--muted)">Top 27%</span></div>
+            <div class="track"><div class="fill"></div></div>
+          </div>
+
+          <div class="artifact">
+            <div class="head"><span>Daily&nbsp;Flow #142</span><span style="color:#FBBF24">⚡ 0:48</span></div>
+            <div class="big">0:48</div>
+            <div class="rank">Nhanh hơn 73% người chơi</div>
+            <div class="ribbon">
+              <span style="background:#E5484D"></span><span style="background:#4C6EF5"></span>
+              <span style="background:#22C55E"></span><span style="background:#FACC15"></span>
+              <span style="background:#F97316"></span>
+            </div>
+            <div class="flow-emoji">🟥🟦🟩🟨🟧 · 🔥8</div>
+            <div class="url">dailyflow.app/142</div>
+          </div>
+
+          <div class="share-cta">
+            <p class="next-in">Màn mới sau <b>14:32:06</b></p>
+            <button class="btn btn-primary"><svg class="svgi" viewBox="0 0 24 24" style="stroke-width:2.2"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>Khoe kết quả</button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">3 · Màn thắng — đỉnh dopamine + viral</div>
+      <p class="subcap">Tốc độ to nhất + “nhanh hơn 73%” (ai cũng hơn ai đó). Artifact <b>spoiler-free</b> (chỉ khoe màu+thời gian, không lộ lời giải). Nút Khoe to, trong tầm ngón cái.</p>
+    </div>
+
+    <!-- 4. ENDLESS PRACTICE (dark mode) -->
+    <div class="framewrap">
+      <div class="phone"><div class="notch"></div>
+        <div class="screen dark">
+          <div class="topbar">
+            <div class="left">
+              <span class="puzzle-no" style="color:#fff">Luyện tập</span>
+              <span class="puzzle-date" style="color:#8893AB">Màn #318 · tự tăng độ khó</span>
+            </div>
+            <span class="streak" style="background:#23262F;color:#FBBF24;border-color:#333845">⚡ x4</span>
+          </div>
+          <div class="seg">
+            <button>Daily</button><button class="on" style="background:#23262F;color:#fff">Endless</button>
+          </div>
+          <div class="diff-ramp" style="color:#8893AB">
+            <span>Dễ</span><span class="lvl"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>Khó</span>
+          </div>
+          <div class="board-area" style="padding-top:2px">
+            <div class="board">
+              <svg width="280" height="280" viewBox="0 0 300 300">
+                <path d="M30 30 H270 V90 H210" fill="none" stroke="#A855F7" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M30 90 V150 H90 V90 H150" fill="none" stroke="#22D3EE" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M150 150 H270 V270 H210" fill="none" stroke="#22C55E" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M30 210 V270 H150" fill="none" stroke="#FACC15" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M90 210 H210" fill="none" stroke="#EC4899" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+                <g font-family="Outfit" font-size="20" fill="#fff" text-anchor="middle">
+                  <circle cx="30" cy="30" r="23" fill="#A855F7"/><text x="30" y="37">★</text>
+                  <circle cx="210" cy="90" r="23" fill="#A855F7"/><text x="210" y="97">★</text>
+                  <circle cx="30" cy="90" r="23" fill="#22D3EE"/><text x="30" y="97" fill="#06414b">●</text>
+                  <circle cx="150" cy="90" r="23" fill="#22D3EE"/><text x="150" y="97" fill="#06414b">●</text>
+                  <circle cx="150" cy="150" r="23" fill="#22C55E"/><text x="150" y="157">■</text>
+                  <circle cx="210" cy="270" r="23" fill="#22C55E"/><text x="210" y="277">■</text>
+                  <circle cx="30" cy="210" r="23" fill="#FACC15"/><text x="30" y="217" fill="#7c5e00">◆</text>
+                  <circle cx="150" cy="270" r="23" fill="#FACC15"/><text x="150" y="277" fill="#7c5e00">◆</text>
+                  <circle cx="90" cy="210" r="23" fill="#EC4899"/><text x="90" y="217">▲</text>
+                  <circle cx="210" cy="210" r="23" fill="#EC4899"/><text x="210" y="217">▲</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="btn btn-ghost" style="background:#23262F;color:#fff;border-color:#333845;box-shadow:0 2px 0 #1a1d24"><svg class="svgi" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>Undo</button>
+            <button class="btn" style="background:#2A2350;color:#C4B5FD"><svg class="svgi" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z"/><path d="M9 21h6"/></svg>Gợi ý</button>
+            <button class="btn btn-ghost" style="background:#23262F;color:#fff;border-color:#333845;box-shadow:0 2px 0 #1a1d24"><svg class="svgi" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Skip</button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">4 · Endless Practice (dark mode)</div>
+      <p class="subcap">Auto-ramp độ khó (thanh Dễ→Khó), combo ⚡x4 nuôi “just one more”. Cùng hệ thống, đảo sang nền tối — chứng minh token màu hoạt động 2 chế độ.</p>
+    </div>
+
+  </div>
+</body>
+</html>
