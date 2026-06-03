@@ -15,12 +15,13 @@ interface DailyResultProps {
   freezeUsed?: boolean;
   countdownText?: string;
   onPlayEndless: () => void;
+  onShowLeaderboard?: () => void;
   playLabel?: string;
 }
 
 export function DailyResult({
   dayNumber, timeText, fasterThan, colorCount, shareUrl,
-  streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, playLabel = 'Chơi Vô tận',
+  streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, onShowLeaderboard, playLabel = 'Chơi Vô tận',
 }: DailyResultProps) {
   const [copied, setCopied] = useState(false);
   const shareText = buildShareText({ dayNumber, timeText, fasterThan, streak: streak ?? 0, colorCount }, shareUrl);
@@ -62,6 +63,9 @@ export function DailyResult({
         <button className="df-btn df-cta" style={{ width: '100%' }} onClick={copy}>
           {copied ? 'Đã sao chép ✓' : '📋 Sao chép link & kết quả'}
         </button>
+        {onShowLeaderboard && (
+          <button className="df-btn" style={{ width: '100%', marginTop: 10 }} onClick={onShowLeaderboard}>🏆 Bảng xếp hạng</button>
+        )}
         {countdownText && (
           <p style={{ color: 'var(--muted)', fontSize: 12, margin: '14px 0 8px' }}>Màn mới sau {countdownText}</p>
         )}
