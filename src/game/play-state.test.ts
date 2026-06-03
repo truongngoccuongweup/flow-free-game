@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createPlayState, linesFromState, isWon, beginAt, extendTo, endDrag, countCompletedColors } from './play-state';
+import { createPlayState, linesFromState, isWon, beginAt, extendTo, endDrag, countCompletedColors, boardProgress } from './play-state';
 import type { Puzzle } from '../engine/types';
 
 const puzzle2x2: Puzzle = {
@@ -128,5 +128,14 @@ describe('countCompletedColors', () => {
     const s = createPlayState(puzzle2x2);
     s.paths[0] = [[0, 0]]; // too short
     expect(countCompletedColors(puzzle2x2, s)).toBe(0);
+  });
+});
+
+describe('boardProgress', () => {
+  it('reports filled cells and pairs done', () => {
+    const s = createPlayState(puzzle2x2);
+    expect(boardProgress(puzzle2x2, s)).toEqual({ filled: 0, total: 4, pairsDone: 0, pairsTotal: 2 });
+    s.paths[0] = [[0, 0], [1, 0]];
+    expect(boardProgress(puzzle2x2, s)).toEqual({ filled: 2, total: 4, pairsDone: 1, pairsTotal: 2 });
   });
 });

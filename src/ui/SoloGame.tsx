@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { PointerEvent } from 'react';
 import type { Puzzle } from '../engine/types';
 import { Board } from './Board';
+import { BoardProgress } from './BoardProgress';
 import { useFlowBoard } from './useFlowBoard';
 import { useStopwatch } from './useStopwatch';
 import { DailyResult } from './DailyResult';
@@ -113,6 +114,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
           <Board puzzle={puzzle} state={b.state} svgRef={b.svgRef} onPointerDown={handlePointerDown} onPointerMove={b.onPointerMove} onPointerUp={b.onPointerUp} />
         </div>
       </div>
+      <BoardProgress puzzle={puzzle} state={b.state} />
       <div className="df-controls">
         <button className="df-btn" onClick={b.undo}>Hoàn tác</button>
         <button

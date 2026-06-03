@@ -18,27 +18,20 @@ interface DailyResultProps {
   playLabel?: string;
 }
 
-type ShareNavigator = Navigator & { share?: (data: { title?: string; text?: string; url?: string }) => Promise<void> };
-
 export function DailyResult({
   dayNumber, timeText, fasterThan, colorCount, shareUrl,
   streak, bestStreak, earnedBadge, freezeUsed, countdownText, onPlayEndless, playLabel = 'Chơi Vô tận',
 }: DailyResultProps) {
-  const [shared, setShared] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const shareText = buildShareText({ dayNumber, timeText, fasterThan, streak: streak ?? 0, colorCount }, shareUrl);
 
-  const share = async (): Promise<void> => {
-    const text = buildShareText({ dayNumber, timeText, fasterThan, streak: streak ?? 0, colorCount }, shareUrl);
-    const nav = navigator as ShareNavigator;
+  const copy = async (): Promise<void> => {
     try {
-      if (typeof nav.share === 'function') {
-        await nav.share({ title: 'Daily Flow', text, url: shareUrl });
-      } else {
-        await navigator.clipboard.writeText(text);
-      }
+      await navigator.clipboard.writeText(shareText);
       track('share', { day: dayNumber });
-      setShared(true);
+      setCopied(true);
     } catch {
-      /* user cancelled or APIs unavailable */
+      /* clipboard unavailable */
     }
   };
 
@@ -62,8 +55,12 @@ export function DailyResult({
           <p style={{ margin: '0 0 6px', fontSize: 12, color: 'var(--muted)' }}>Kỷ lục: 🏅 {bestStreak}</p>
         )}
         <div style={{ height: 12 }} />
-        <button className="df-btn df-cta" style={{ width: '100%' }} onClick={share}>
-          {shared ? 'Đã chia sẻ! 🔗' : 'Khoe & rủ bạn chơi'}
+        <p style={{ color: 'var(--muted)', fontSize: 12, textAlign: 'left', margin: '0 0 6px' }}>🔗 Rủ bạn chơi màn này — sao chép & gửi:</p>
+        <div className="df-sharebox">
+          <textarea className="df-sharetext" readOnly rows={4} value={shareText} onFocus={(e) => e.currentTarget.select()} />
+        </div>
+        <button className="df-btn df-cta" style={{ width: '100%' }} onClick={copy}>
+          {copied ? 'Đã sao chép ✓' : '📋 Sao chép link & kết quả'}
         </button>
         {countdownText && (
           <p style={{ color: 'var(--muted)', fontSize: 12, margin: '14px 0 8px' }}>Màn mới sau {countdownText}</p>

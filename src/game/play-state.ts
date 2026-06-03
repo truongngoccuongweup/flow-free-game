@@ -1,5 +1,5 @@
 import type { Puzzle, Coord, Line } from '../engine/types';
-import { eq, adjacent } from '../engine/grid';
+import { eq, adjacent, key } from '../engine/grid';
 import { isSolved, isContiguous } from '../engine/validate';
 
 export interface PlayState {
@@ -19,6 +19,25 @@ export function linesFromState(state: PlayState): Line[] {
 
 export function isWon(puzzle: Puzzle, state: PlayState): boolean {
   return isSolved(puzzle, linesFromState(state));
+}
+
+export interface BoardProgress {
+  filled: number;     // unique cells covered by any path
+  total: number;      // all cells on the board
+  pairsDone: number;  // colors fully connected
+  pairsTotal: number; // total colors
+}
+
+/** How close the board is to a win: cells filled + pairs connected. */
+export function boardProgress(puzzle: Puzzle, state: PlayState): BoardProgress {
+  const seen = new Set<string>();
+  for (const cells of Object.values(state.paths)) for (const c of cells) seen.add(key(c));
+  return {
+    filled: seen.size,
+    total: puzzle.size[0] * puzzle.size[1],
+    pairsDone: countCompletedColors(puzzle, state),
+    pairsTotal: puzzle.pairs.length,
+  };
 }
 
 /** Number of colors whose path correctly connects both endpoints (contiguous, ≥2 cells). */
