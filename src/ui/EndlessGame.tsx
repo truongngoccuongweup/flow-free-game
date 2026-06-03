@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { Puzzle } from '../engine/types';
 import type { PlayState } from '../game/play-state';
 import { Board } from './Board';
+import { BoardProgress } from './BoardProgress';
 import { useFlowBoard } from './useFlowBoard';
 import { useBoardFeedback } from './useBoardFeedback';
 import { useHintQuota } from './useHintQuota';
@@ -28,6 +29,7 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
           />
         </div>
       </div>
+      <BoardProgress puzzle={puzzle} state={b.state} />
       <div className="df-controls">
         <button className="df-btn" onClick={b.undo}>Hoàn tác</button>
         <button
