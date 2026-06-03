@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Puzzle } from '../engine/types';
 import type { PlayState } from '../game/play-state';
 import { Board } from './Board';
@@ -9,6 +9,17 @@ import { useBoardFeedback } from './useBoardFeedback';
 import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
 import { track } from './analytics';
+import { buildEndlessSequence } from '../game/endless';
+
+function DifficultyPips({ value, max }: { value: number; max: number }) {
+  return (
+    <span className="df-diff" aria-label={`Độ khó ${value}/${max}`}>
+      {Array.from({ length: max }, (_, i) => (
+        <span key={i} className={`df-pip${i < value ? ' on' : ''}`} />
+      ))}
+    </span>
+  );
+}
 
 function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialState?: PlayState; onNext: () => void }) {
   const b = useFlowBoard(puzzle, initialState);
@@ -55,8 +66,10 @@ function BoardGame({ puzzle, initialState, onNext }: { puzzle: Puzzle; initialSt
 }
 
 export function EndlessGame({ puzzles, initialState }: { puzzles: Puzzle[]; initialState?: PlayState }) {
+  const seq = useMemo(() => buildEndlessSequence(puzzles), [puzzles]);
+  const maxDiff = useMemo(() => seq.reduce((m, p) => Math.max(m, p.difficulty), 1), [seq]);
   const [index, setIndex] = useState(0);
-  const puzzle = puzzles[index];
+  const puzzle = seq[index];
   if (!puzzle) {
     return (
       <div className="df-board-wrap">
@@ -65,11 +78,17 @@ export function EndlessGame({ puzzles, initialState }: { puzzles: Puzzle[]; init
     );
   }
   return (
-    <BoardGame
-      key={puzzle.id}
-      puzzle={puzzle}
-      initialState={index === 0 ? initialState : undefined}
-      onNext={() => setIndex((i) => i + 1)}
-    />
+    <>
+      <div className="df-endless-head">
+        <span>Màn {index + 1}</span>
+        <span className="df-diff-wrap">Độ khó <DifficultyPips value={puzzle.difficulty} max={maxDiff} /></span>
+      </div>
+      <BoardGame
+        key={puzzle.id}
+        puzzle={puzzle}
+        initialState={index === 0 ? initialState : undefined}
+        onNext={() => setIndex((i) => i + 1)}
+      />
+    </>
   );
 }

@@ -131,6 +131,16 @@ body {
 }
 .df-chip:active { transform: scale(0.96); }
 
+.df-endless-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-heading), sans-serif; font-weight: 600; font-size: 14px; color: var(--ink);
+  padding: 2px 2px 0;
+}
+.df-diff-wrap { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.df-diff { display: inline-flex; gap: 3px; }
+.df-pip { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.df-pip.on { background: var(--brand); }
+
 .df-progress { margin: 10px 2px 0; }
 .df-progress-track { height: 8px; background: var(--seg-bg); border-radius: 999px; overflow: hidden; }
 .df-progress-fill { height: 100%; background: var(--brand); border-radius: 999px; transition: width .25s ease; }
