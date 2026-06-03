@@ -4,7 +4,7 @@ import { useState } from 'react';
 export function NameModal({ onSave, onClose }: { onSave: (name: string) => void; onClose?: () => void }) {
   const [v, setV] = useState('');
   return (
-    <div className="df-win" role="dialog" aria-label="Nhập tên">
+    <div className="df-win" role="dialog" aria-label="Nhập tên" style={{ zIndex: 71 }}>
       <div className="df-win-card" style={{ minWidth: 270 }}>
         <p className="df-title" style={{ fontSize: 20, margin: '0 0 4px' }}>Tên của bạn</p>
         <p style={{ color: 'var(--muted)', fontSize: 12, margin: '0 0 12px' }}>Hiển thị trên bảng xếp hạng (nhập một lần).</p>

@@ -15,7 +15,7 @@ export function Leaderboard({ date, cid, onClose }: { date: string; cid: string;
   }, [date]);
 
   return (
-    <div className="df-win" role="dialog" aria-label="Bảng xếp hạng" onClick={onClose}>
+    <div className="df-win" role="dialog" aria-label="Bảng xếp hạng" style={{ zIndex: 70 }} onClick={onClose}>
       <div className="df-win-card" style={{ minWidth: 300, maxWidth: 360 }} onClick={(e) => e.stopPropagation()}>
         <p className="df-title" style={{ fontSize: 20, margin: 0 }}>🏆 Bảng xếp hạng</p>
         <p style={{ color: 'var(--muted)', fontSize: 12, margin: '2px 0 12px' }}>Daily {date} · nhanh nhất</p>
