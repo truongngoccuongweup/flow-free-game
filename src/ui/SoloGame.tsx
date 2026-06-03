@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import type { Puzzle } from '../engine/types';
 import { Board } from './Board';
@@ -8,6 +8,10 @@ import { useFlowBoard } from './useFlowBoard';
 import { useStopwatch } from './useStopwatch';
 import { DailyResult } from './DailyResult';
 import { StreakCalendar } from './StreakCalendar';
+import { Leaderboard } from './Leaderboard';
+import { NameModal } from './NameModal';
+import { useNickname } from './useNickname';
+import { submitScore } from '../game/leaderboard-api';
 import { useBoardFeedback } from './useBoardFeedback';
 import { useHintQuota } from './useHintQuota';
 import { Confetti } from './Confetti';
@@ -48,6 +52,11 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
   const [countdown, setCountdown] = useState('');
   const [stats, setStats] = useState<DailyStats | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showName, setShowName] = useState(false);
+  const nick = useNickname();
+  const lastMsRef = useRef<number | null>(null);
+  const today = dailyDateISO(new Date());
 
   useEffect(() => {
     if (recordStats) setStats(loadStats(window.localStorage));
@@ -85,6 +94,10 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
       earnedBadge: justEarnedBadge(prev.streak, next.streak),
       freezeUsed,
     });
+    // submit to the daily leaderboard (ask for a nickname the first time)
+    lastMsRef.current = ms;
+    if (nick.name) void submitScore({ date: today, ms, name: nick.name, cid: nick.cid });
+    else setShowName(true);
   }, [b.won, result, sw, puzzle, recordStats]);
 
   useEffect(() => {
@@ -128,6 +141,17 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
       </div>
       {confetti && <Confetti />}
       {showCalendar && stats && <StreakCalendar stats={stats} onClose={() => setShowCalendar(false)} />}
+      {showLeaderboard && <Leaderboard date={today} cid={nick.cid} onClose={() => setShowLeaderboard(false)} />}
+      {showName && (
+        <NameModal
+          onSave={(n) => {
+            nick.save(n);
+            if (lastMsRef.current != null) void submitScore({ date: today, ms: lastMsRef.current, name: n, cid: nick.cid });
+            setShowName(false);
+          }}
+          onClose={() => setShowName(false)}
+        />
+      )}
       {result && (
         <DailyResult
           dayNumber={dayNumber}
@@ -140,6 +164,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
           earnedBadge={result.earnedBadge}
           freezeUsed={result.freezeUsed}
           countdownText={recordStats ? countdown : undefined}
+          onShowLeaderboard={recordStats ? () => setShowLeaderboard(true) : undefined}
           onPlayEndless={onPlayMore}
           playLabel={playLabel}
         />
