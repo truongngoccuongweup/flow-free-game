@@ -70,6 +70,14 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
     [b],
   );
 
+  // Submit the daily score and refine the on-screen "faster than %" with the real
+  // server value (falls back to the local estimate if the leaderboard is unavailable).
+  const submitAndUpdate = useCallback((ms: number, name: string) => {
+    void submitScore({ date: today, ms, name, cid: nick.cid }).then(({ fasterThan }) => {
+      if (fasterThan != null) setResult((r) => (r ? { ...r, fasterThan } : r));
+    });
+  }, [today, nick.cid]);
+
   useEffect(() => {
     if (!b.won || result) return;
     const ms = sw.elapsed();
@@ -96,7 +104,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
     });
     // submit to the daily leaderboard (ask for a nickname the first time)
     lastMsRef.current = ms;
-    if (nick.name) void submitScore({ date: today, ms, name: nick.name, cid: nick.cid });
+    if (nick.name) submitAndUpdate(ms, nick.name);
     else setShowName(true);
   }, [b.won, result, sw, puzzle, recordStats]);
 
@@ -146,7 +154,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         <NameModal
           onSave={(n) => {
             nick.save(n);
-            if (lastMsRef.current != null) void submitScore({ date: today, ms: lastMsRef.current, name: n, cid: nick.cid });
+            if (lastMsRef.current != null) submitAndUpdate(lastMsRef.current, n);
             setShowName(false);
           }}
           onClose={() => setShowName(false)}
