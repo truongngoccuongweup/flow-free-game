@@ -167,13 +167,41 @@ body {
   padding: 10px 12px;
 }
 
-/* Guided tour (driver.js) — light on-brand polish */
-.driver-popover { border-radius: 16px; font-family: var(--font-body), sans-serif; max-width: 300px; }
-.driver-popover-title { font-family: var(--font-heading), sans-serif; font-size: 16px; }
-.driver-popover-next-btn, .driver-popover-prev-btn {
-  background: var(--brand) !important; color: #fff !important; border: none !important;
-  border-radius: 10px !important; text-shadow: none !important; font-weight: 600;
+/* Guided tour (driver.js) — themed, on-brand, vibrant */
+.driver-popover {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line);
+  border-radius: 20px !important;
+  box-shadow: 0 24px 48px -16px rgba(15, 23, 42, .45);
+  padding: 20px 20px 16px !important;
+  max-width: 320px !important;
+  font-family: var(--font-body), sans-serif;
 }
+.driver-popover-arrow { display: none !important; } /* spotlight already points; avoids theme color mismatch */
+.driver-popover-title {
+  font-family: var(--font-heading), sans-serif !important;
+  font-weight: 800 !important; font-size: 19px !important; letter-spacing: -0.01em;
+  color: var(--ink) !important;
+}
+.driver-popover-description { color: var(--muted) !important; font-size: 14px !important; line-height: 1.55 !important; margin-top: 6px !important; }
+.driver-popover-progress-text {
+  color: var(--brand) !important; font-weight: 700 !important; font-size: 12px !important;
+  background: var(--seg-bg); padding: 4px 10px; border-radius: 999px;
+}
+.driver-popover-close-btn { color: var(--muted) !important; font-size: 22px !important; opacity: .7; transition: opacity .15s; }
+.driver-popover-close-btn:hover { opacity: 1; }
+.driver-popover-footer { margin-top: 14px !important; gap: 8px; }
+.driver-popover-footer button {
+  border: none !important; border-radius: 12px !important; padding: 9px 16px !important;
+  font-family: var(--font-heading), sans-serif !important; font-weight: 700 !important; font-size: 14px !important;
+  text-shadow: none !important; transition: transform .12s ease, box-shadow .2s ease;
+}
+.driver-popover-next-btn {
+  background: linear-gradient(100deg, var(--brand), #7AA2FF) !important; color: #fff !important;
+  box-shadow: 0 4px 0 var(--brand-press) !important;
+}
+.driver-popover-next-btn:active { box-shadow: 0 1px 0 var(--brand-press) !important; transform: translateY(2px); }
 .driver-popover-prev-btn { background: var(--seg-bg) !important; color: var(--ink) !important; }
 
 @keyframes df-pop { from { transform: scale(.86); opacity: 0; } to { transform: scale(1); opacity: 1; } }
