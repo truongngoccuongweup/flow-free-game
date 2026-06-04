@@ -167,6 +167,15 @@ body {
   padding: 10px 12px;
 }
 
+/* Guided tour (driver.js) — light on-brand polish */
+.driver-popover { border-radius: 16px; font-family: var(--font-body), sans-serif; max-width: 300px; }
+.driver-popover-title { font-family: var(--font-heading), sans-serif; font-size: 16px; }
+.driver-popover-next-btn, .driver-popover-prev-btn {
+  background: var(--brand) !important; color: #fff !important; border: none !important;
+  border-radius: 10px !important; text-shadow: none !important; font-weight: 600;
+}
+.driver-popover-prev-btn { background: var(--seg-bg) !important; color: var(--ink) !important; }
+
 @keyframes df-pop { from { transform: scale(.86); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes df-fade { from { opacity: 0; } to { opacity: 1; } }
 
