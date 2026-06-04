@@ -140,6 +140,7 @@ export function SoloGame({ puzzle, dayNumber, recordStats, onPlayMore, playLabel
         <button className="df-btn" onClick={b.undo}>Hoàn tác</button>
         <button
           className="df-btn"
+          data-tour="hint"
           disabled={b.won || hintQuota.remaining <= 0}
           onClick={() => { if (!b.won && hintQuota.use()) { track('hint_used', { mode: recordStats ? 'daily' : 'challenge' }); b.hint(); } }}
         >

@@ -11,8 +11,10 @@ import { Onboarding } from '../ui/Onboarding';
 import { useTheme } from '../ui/useTheme';
 import { useFeedbackPrefs } from '../ui/useFeedbackPrefs';
 import { track } from '../ui/analytics';
+import { startTour } from '../ui/tour';
 
 const ONBOARD_KEY = 'daily-flow-onboarded';
+const TOUR_KEY = 'daily-flow-tour';
 
 function FeedbackToggle() {
   const { enabled, toggle } = useFeedbackPrefs();
@@ -79,6 +81,13 @@ export default function Home() {
     try { window.localStorage.setItem(ONBOARD_KEY, '1'); } catch { /* ignore */ }
     track('onboarding_done');
     setShowOnboarding(false);
+    // first-timers: follow the rules modal with the interactive UI tour (once)
+    try {
+      if (!window.localStorage.getItem(TOUR_KEY)) {
+        window.localStorage.setItem(TOUR_KEY, '1');
+        setTimeout(() => startTour(), 450);
+      }
+    } catch { /* ignore */ }
   };
 
   const byId = puzzles ? indexById(puzzles) : null;
@@ -95,8 +104,8 @@ export default function Home() {
           <div className="df-logo">Daily Flow</div>
           <p className="df-sub">Nối hai chấm cùng màu · lấp đầy bảng</p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="df-icon-btn" onClick={() => setShowOnboarding(true)} aria-label="Hướng dẫn chơi">
+        <div style={{ display: 'flex', gap: 8 }} data-tour="tools">
+          <button className="df-icon-btn" onClick={() => startTour()} aria-label="Hướng dẫn chơi">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" /><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3" /><path d="M12 17h.01" />
             </svg>
